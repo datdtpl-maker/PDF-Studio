@@ -165,7 +165,7 @@ h2 {
 
 .tabs {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
   padding: 8px;
   border-bottom: 1px solid var(--border);
   background: var(--surface-soft);
@@ -474,6 +474,73 @@ h2 {
   gap: 16px;
 }
 
+.settings-grid--three {
+  grid-template-columns: repeat(3, 1fr);
+  margin-top: 20px;
+}
+
+.field--quality {
+  align-content: start;
+}
+
+.field--quality > span {
+  display: flex;
+  justify-content: space-between;
+}
+
+.field--quality strong {
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.field--quality input {
+  width: 100%;
+  margin-top: 12px;
+  accent-color: var(--accent);
+}
+
+.field--quality input:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.image-file-list {
+  display: grid;
+  max-height: 260px;
+  gap: 8px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.image-file-row {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: white;
+}
+
+.image-file-icon {
+  display: grid;
+  width: 40px;
+  height: 40px;
+  flex: 0 0 auto;
+  place-items: center;
+  color: #34735a;
+  border-radius: 10px;
+  background: var(--accent-soft);
+}
+
+.setting-note {
+  margin-top: 12px;
+  color: var(--text-muted);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
 .field {
   display: grid;
   gap: 8px;
@@ -717,6 +784,10 @@ footer {
   }
 
   .settings-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .settings-grid--three {
     grid-template-columns: 1fr;
   }
 

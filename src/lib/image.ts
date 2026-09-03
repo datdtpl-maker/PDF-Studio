@@ -1,4 +1,3 @@
-import JSZip from "jszip";
 import { safeBaseName } from "./files";
 
 export type CompressedImageFormat = "jpeg" | "webp" | "png";
@@ -153,6 +152,7 @@ export async function compressImageFiles(
     };
   }
 
+  const { default: JSZip } = await import("jszip");
   const zip = new JSZip();
   results.forEach((result) => zip.file(result.filename, result.blob));
   const blob = await zip.generateAsync({

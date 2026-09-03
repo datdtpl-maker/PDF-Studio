@@ -1,10 +1,25 @@
-import JSZip from "jszip";
-import { PDFDocument } from "pdf-lib";
-import * as pdfjs from "pdfjs-dist";
-import workerUrl from "pdfjs-dist/build/pdf.worker.min.mjs?url";
 import { safeBaseName } from "./files";
 
-pdfjs.GlobalWorkerOptions.workerSrc = workerUrl;
+let pdfJsPromise: Promise<typeof import("pdfjs-dist")> | undefined;
+
+function loadPdfJs(): Promise<typeof import("pdfjs-dist")> {
+  if (!pdfJsPromise) {
+    pdfJsPromise = Promise.all([
+      import("pdfjs-dist"),
+      import("pdfjs-dist/build/pdf.worker.min.mjs?url"),
+    ])
+      .then(([pdfjs, worker]) => {
+        pdfjs.GlobalWorkerOptions.workerSrc = worker.default;
+        return pdfjs;
+      })
+      .catch((error: unknown) => {
+        pdfJsPromise = undefined;
+        throw error;
+      });
+  }
+
+  return pdfJsPromise;
+}
 
 export type ImageFormat = "png" | "jpeg" | "webp";
 
@@ -22,7 +37,8 @@ export interface ConvertOptions {
 }
 
 export async function inspectPdf(file: File): Promise<number> {
-  const bytes = new Uint8Array(await file.arrayBuffer());
+  const [pdfjs, buffer] = await Promise.all([loadPdfJs(), file.arrayBuffer()]);
+  const bytes = new Uint8Array(buffer);
   const task = pdfjs.getDocument({ data: bytes });
   try {
     const document = await task.promise;
@@ -37,6 +53,7 @@ export async function mergePdfs(files: File[]): Promise<Blob> {
     throw new Error("Cần ít nhất 2 file PDF để gộp.");
   }
 
+  const { PDFDocument } = await import("pdf-lib");
   const output = await PDFDocument.create();
 
   for (const file of files) {
@@ -72,7 +89,12 @@ export async function convertPdfToImages(
   file: File,
   options: ConvertOptions,
 ): Promise<{ blob: Blob; filename: string }> {
-  const bytes = new Uint8Array(await file.arrayBuffer());
+  const [pdfjs, { default: JSZip }, buffer] = await Promise.all([
+    loadPdfJs(),
+    import("jszip"),
+    file.arrayBuffer(),
+  ]);
+  const bytes = new Uint8Array(buffer);
   const task = pdfjs.getDocument({ data: bytes });
   const pdfDocument = await task.promise;
   const zip = new JSZip();

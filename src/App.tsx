@@ -4,6 +4,7 @@ import {
   Download,
   Files,
   Image,
+  ImageDown,
   LoaderCircle,
   LockKeyhole,
   Merge,
@@ -13,6 +14,7 @@ import {
 import { useMemo, useRef, useState } from "react";
 import { DropZone } from "./components/DropZone";
 import { FileRow } from "./components/FileRow";
+import { ImageCompressor } from "./components/ImageCompressor";
 import { downloadBlob, formatBytes, isPdf } from "./lib/files";
 import {
   convertPdfToImages,
@@ -22,7 +24,7 @@ import {
   PdfFileInfo,
 } from "./lib/pdf";
 
-type Mode = "merge" | "convert";
+type Mode = "merge" | "convert" | "compress";
 type Status =
   | { type: "idle" }
   | { type: "working"; message: string; progress?: number }
@@ -214,6 +216,16 @@ export default function App() {
               <Image size={18} aria-hidden="true" />
               PDF sang ảnh
             </button>
+            <button
+              className={`tab ${mode === "compress" ? "is-active" : ""}`}
+              role="tab"
+              aria-selected={mode === "compress"}
+              type="button"
+              onClick={() => switchMode("compress")}
+            >
+              <ImageDown size={18} aria-hidden="true" />
+              Nén ảnh
+            </button>
           </div>
 
           <div className="tool-card__body">
@@ -301,7 +313,7 @@ export default function App() {
                   </>
                 )}
               </section>
-            ) : (
+            ) : mode === "convert" ? (
               <section aria-label="Chuyển PDF sang ảnh">
                 <div className="section-heading">
                   <div>
@@ -421,6 +433,8 @@ export default function App() {
                   </>
                 )}
               </section>
+            ) : (
+              <ImageCompressor />
             )}
 
             {status.type !== "idle" && (
@@ -448,8 +462,8 @@ export default function App() {
         <div className="quality-note">
           <CheckCircle2 size={18} aria-hidden="true" />
           <p>
-            <strong>Gộp không tái nén:</strong> nội dung trang PDF được sao chép
-            trực tiếp, giữ nguyên độ nét của chữ, vector và hình ảnh.
+            <strong>Xử lý hoàn toàn cục bộ:</strong> PDF và hình ảnh không được
+            tải lên máy chủ, mọi thao tác diễn ra ngay trên thiết bị.
           </p>
         </div>
       </section>

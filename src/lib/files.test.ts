@@ -12,6 +12,9 @@ describe("formatBytes", () => {
 describe("safeBaseName", () => {
   it("creates a portable download name", () => {
     expect(safeBaseName("Hồ sơ khách hàng.pdf")).toBe("Ho-so-khach-hang");
+    expect(safeBaseName("Ảnh sản phẩm.final.JPG")).toBe(
+      "Anh-san-pham-final",
+    );
     expect(safeBaseName("__.pdf")).toBe("__");
   });
 });

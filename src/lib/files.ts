@@ -10,7 +10,7 @@ export function formatBytes(bytes: number): string {
 }
 
 export function safeBaseName(filename: string): string {
-  const withoutExtension = filename.replace(/\.pdf$/i, "");
+  const withoutExtension = filename.replace(/\.[^.]+$/i, "");
   const normalized = withoutExtension
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")

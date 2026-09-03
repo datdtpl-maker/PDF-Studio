@@ -5,12 +5,20 @@ interface DropZoneProps {
   multiple?: boolean;
   onFiles: (files: File[]) => void;
   compact?: boolean;
+  accept?: string;
+  title?: string;
+  hint?: string;
+  compactTitle?: string;
 }
 
 export function DropZone({
   multiple = false,
   onFiles,
   compact = false,
+  accept = ".pdf,application/pdf",
+  title = "Thả file PDF vào đây",
+  hint = "hoặc chọn file từ thiết bị",
+  compactTitle = "Thêm PDF khác",
 }: DropZoneProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -40,7 +48,7 @@ export function DropZone({
         ref={inputRef}
         className="sr-only"
         type="file"
-        accept=".pdf,application/pdf"
+        accept={accept}
         multiple={multiple}
         onChange={(event) => {
           onFiles(Array.from(event.target.files ?? []));
@@ -52,9 +60,9 @@ export function DropZone({
       </div>
       <div>
         <p className="drop-zone__title">
-          {compact ? "Thêm PDF khác" : "Thả file PDF vào đây"}
+          {compact ? compactTitle : title}
         </p>
-        {!compact && <p className="drop-zone__hint">hoặc chọn file từ thiết bị</p>}
+        {!compact && <p className="drop-zone__hint">{hint}</p>}
       </div>
       <button
         className="button button--secondary"

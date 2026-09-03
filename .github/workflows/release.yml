@@ -53,7 +53,7 @@ jobs:
         run: pnpm desktop:build
 
       - name: Upload workflow artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: PDF-Studio-Setup-${{ steps.version.outputs.value }}
           path: release/PDF-Studio-Setup-${{ steps.version.outputs.value }}.exe
